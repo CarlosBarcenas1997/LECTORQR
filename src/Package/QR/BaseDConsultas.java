@@ -22,12 +22,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import org.apache.poi.hslf.model.Sheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 
 
 
@@ -66,11 +62,11 @@ public class BaseDConsultas extends javax.swing.JFrame {
         jTable4.setModel(asistencia);
          String sql="";
         if(valor.equals("")){
-            sql="SELECT * FROM RRHH.Db_Nominas_Asistencias";
+            sql="SELECT * FROM RRHH.Nominas_Asistencias";
             
         }
         else{
-            sql="SELECT * FROM RRHH.Db_Nominas_Asistencias WHERE (Asistencia_Id'"+valor+"' OR Usuario_Id'"+valor+"'"
+            sql="SELECT * FROM RRHH.Nominas_Asistencias WHERE (Asistencia_Id'"+valor+"' OR Usuario_Id'"+valor+"'"
                     + "Fecha_Ingreso'"+valor+"' OR Hora_Ingreso'"+valor+"' OR Hora_Salida'"+valor+"'";
             
         }
@@ -977,8 +973,10 @@ public class BaseDConsultas extends javax.swing.JFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
+        
         mostrardatos(jTextField11.getText());
         jTextField11.setText("");
+        
         
     }//GEN-LAST:event_jButton8ActionPerformed
 

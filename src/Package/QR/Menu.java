@@ -175,12 +175,12 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
 
             if (result != null) {
                 result_field.setText(result.getText());
-               
-                String dato = result_field.getText();
+                            
         
-               enviarDato(dato);
+               enviarDato(result_field.getText());
                
-               verificarSalida(dato);
+               verificarSalida(result_field.getText());
+               result_field.setText("");
             }
         } while (true);
         
@@ -207,7 +207,7 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
 
                  
                   
-            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Db_Nominas_Asistencias(Hora_Salida) VALUES (?)");
+            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Nominas_Asistencias(Hora_Salida) VALUES (?)");
             pst.setString(1, hora);
 
                         
@@ -254,8 +254,11 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         String sql="";
         
         if(valor.equals("")){
-            JOptionPane.showMessageDialog(null, "Se ha registrado tu asistencia");
+               sql="SELECT * FROM RRHH.Db_Usuarios";
+
               try{
+                   sql="SELECT * FROM RRHH.Db_Usuarios";
+                  JOptionPane.showMessageDialog(null, "Se ha registrado tu asistencia");
                   //obtener hora
                   DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                   Date date = new Date();
@@ -270,10 +273,10 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
                  int mes = fecha.get(Calendar.MONTH);
                  int dia = fecha.get(Calendar.DAY_OF_MONTH);
                  String fechahoy = "";
-                 fechahoy = dia + "/" + (mes+1) + "/" + ano;
+                 fechahoy = ano + "-" + (mes+1) + "-" + dia;
                  
                   
-            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Db_Nominas_Asistencias(Usuario_Id,Fecha_Ingreso,Hora_Ingreso, "
+            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Nominas_Asistencias(Usuario_Id,Fecha_Ingreso,Hora_Ingreso, "
                     + "Hora_Salida) VALUES (?,?,?,?)");
             pst.setString(1, valor);
             pst.setString(2, hora);
@@ -292,6 +295,7 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         }
         }
         else{
+              sql="SELECT * FROM RRHH.Db_Usuarios WHERE (Usuario_Id'"+valor+"')";
           JOptionPane.showMessageDialog(null, "El codigo ingresado no existe en la base de datos");
             
         }

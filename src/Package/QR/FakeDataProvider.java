@@ -31,7 +31,7 @@ public final class FakeDataProvider {
         tableHeader.add("Id_Asistencia");
         tableHeader.add("Id_Usuario");
         tableHeader.add("Fecha_Ingreso");
-        tableHeader.add("Hora_Salia");
+        tableHeader.add("Hora_Salida");
         tableHeader.add("Hora_Salida");
   
 
@@ -53,7 +53,7 @@ public final class FakeDataProvider {
 
             List<List<String>> tableContent = new ArrayList<List<String>>();
 
-            String SQL = "SELECT * FROM RRHH.Db_Nominas_Asistencias";
+            String SQL = "SELECT * FROM RRHH.Nominas_Asistencias";
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(SQL);
 
