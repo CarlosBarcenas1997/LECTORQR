@@ -6,7 +6,9 @@
 package Package.QR;
 
 import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -30,6 +32,8 @@ public class ConexionDB {
         }
             return conexionDB;
     }
+    
+  
 }
 
  

@@ -10,11 +10,22 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import javax.swing.JOptionPane;
 
 public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory {
 
@@ -47,27 +58,41 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         result_field.setBorder(null);
-        jPanel1.add(result_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 470, 20));
+        jPanel1.add(result_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 700, 470, 20));
 
         jSeparator1.setForeground(new java.awt.Color(126, 167, 206));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 470, 10));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 720, 470, 10));
 
         jLabel1.setForeground(new java.awt.Color(105, 105, 105));
         jLabel1.setText("Resultado");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 680, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(250, 250, 250));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230)));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 470, 300));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 680));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 500, 370));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1120, 740));
 
         jButton1.setText("Administrador");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 380, -1, -1));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 760, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+        
+        BaseDConsultas nF = new BaseDConsultas(); 
+        nF.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -116,8 +141,8 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         panel.setPreferredSize(size);
         panel.setFPSDisplayed(true);
 
-        jPanel2.add(panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 470, 300));
-
+        jPanel2.add(panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 600));
+  // jPanel2.add(panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 470, 300));
         executor.execute(this);
     }
 
@@ -150,9 +175,146 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
 
             if (result != null) {
                 result_field.setText(result.getText());
+               
+                String dato = result_field.getText();
+        
+               enviarDato(dato);
+               
+               verificarSalida(dato);
             }
         } while (true);
+        
+        //result_field sirve para obtener    
+       
+        
     }
+    
+    private void verificarSalida(String valor){
+        ConexionDB cc = new ConexionDB();
+        Connection cn = cc.conexion();  
+        
+        String sql="";
+        if(valor.equals("")){
+            JOptionPane.showMessageDialog(null, "Se ha registrado tu salida");
+              try{
+                  //obtener hora
+                  DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                  Date date = new Date();
+                  
+                  String hora="";
+                 hora =  dateFormat.format(date);
+                 
+
+                 
+                  
+            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Db_Nominas_Asistencias(Hora_Salida) VALUES (?)");
+            pst.setString(1, hora);
+
+                        
+            int a= pst.executeUpdate();
+            if(a>0){
+                JOptionPane.showMessageDialog(null,"Registro de Salida exitoso");
+
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Error al agregar");
+            }
+        }catch(Exception e){
+            
+        }
+        }
+        else{
+          JOptionPane.showMessageDialog(null, "El codigo ingresado no existe en la base de datos");
+            
+        }
+        
+         String []datos = new String [7];
+        
+        try{
+            Statement st=(Statement) cn.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            while(rs.next()){
+                datos[0] = rs.getString(1);
+             
+            }
+ 
+        }catch(SQLException ex){
+           // Logger.getLogger(datos.class.getName()).log(Level.SEVERE,null,ex);
+        }
+       
+    }
+    
+    
+    private void enviarDato(String valor){
+        
+         
+       ConexionDB cc = new ConexionDB();
+        Connection cn = cc.conexion();  
+        
+        String sql="";
+        
+        if(valor.equals("")){
+            JOptionPane.showMessageDialog(null, "Se ha registrado tu asistencia");
+              try{
+                  //obtener hora
+                  DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                  Date date = new Date();
+                  
+                  String hora="";
+                 hora =  dateFormat.format(date);
+                 
+                 //obtener fecha
+                 Calendar fecha = new GregorianCalendar();
+                 
+                 int ano = fecha.get(Calendar.YEAR);
+                 int mes = fecha.get(Calendar.MONTH);
+                 int dia = fecha.get(Calendar.DAY_OF_MONTH);
+                 String fechahoy = "";
+                 fechahoy = dia + "/" + (mes+1) + "/" + ano;
+                 
+                  
+            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Db_Nominas_Asistencias(Usuario_Id,Fecha_Ingreso,Hora_Ingreso, "
+                    + "Hora_Salida) VALUES (?,?,?,?)");
+            pst.setString(1, valor);
+            pst.setString(2, hora);
+            pst.setString(3, fechahoy);
+                        
+            int a= pst.executeUpdate();
+            if(a>0){
+                JOptionPane.showMessageDialog(null,"Registro de asistencia exitoso");
+
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Error al agregar");
+            }
+        }catch(Exception e){
+            
+        }
+        }
+        else{
+          JOptionPane.showMessageDialog(null, "El codigo ingresado no existe en la base de datos");
+            
+        }
+        
+         String []datos = new String [7];
+        
+        try{
+            Statement st=(Statement) cn.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            while(rs.next()){
+                datos[0] = rs.getString(1);
+             
+            }
+ 
+        }catch(SQLException ex){
+           // Logger.getLogger(datos.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        
+        
+    }
+    
+
+    
 
     @Override
     public Thread newThread(Runnable r) {
