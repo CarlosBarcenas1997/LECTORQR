@@ -26,6 +26,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory {
 
@@ -50,6 +51,7 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -82,6 +84,14 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 760, -1, -1));
 
+        jButton2.setText("Salir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 750, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -90,9 +100,23 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         
         
         BaseDConsultas nF = new BaseDConsultas(); 
+        
         nF.setVisible(true);
+    
+
+       // jPanel2.add(panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 600));
+  // jPanel2.add(panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 470, 300));
+        executor.execute(this);
+    
+        
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        
+        System.exit(0);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -125,6 +149,7 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -179,7 +204,7 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
         
                enviarDato(result_field.getText());
                
-               verificarSalida(result_field.getText());
+           //    verificarSalida(result_field.getText());
                result_field.setText("");
             }
         } while (true);
@@ -247,19 +272,28 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
     
     private void enviarDato(String valor){
         
-         
-       ConexionDB cc = new ConexionDB();
-        Connection cn = cc.conexion();  
         
-        String sql="";
-        
-        if(valor.equals("")){
-               sql="SELECT * FROM RRHH.Db_Usuarios";
+        ConexionDB cc = new ConexionDB();
+        Connection cn = cc.conexion();
 
-              try{
-                   sql="SELECT * FROM RRHH.Db_Usuarios";
-                  JOptionPane.showMessageDialog(null, "Se ha registrado tu asistencia");
-                  //obtener hora
+        String sql="";
+        if(valor.equals("")){
+            sql="SELECT * FROM RRHH.Db_Usuarios";
+            
+        }
+        else{
+            sql="SELECT * FROM RRHH.Db_Usuarios WHERE (Usuario_id='"+valor+"' OR Usuario_Nombre1='"+valor+"' OR Usuario_Nombre2='"+valor+"'"
+                    + "OR Usuario_Apellido1='"+valor+"' OR Usuario_Apellido2='"+valor+"' OR Puesto_Id='"+valor+"' OR JornadaLaboral_Id='"+valor+"')";
+          
+
+            int time = 0;
+            int duration = 1000;
+            
+            if (time<duration){
+            JOptionPane.showMessageDialog(null,"El codigo existe en la base de datos");
+            }
+            
+                                   //obtener hora
                   DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                   Date date = new Date();
                   
@@ -273,48 +307,121 @@ public class Menu extends javax.swing.JFrame implements Runnable, ThreadFactory 
                  int mes = fecha.get(Calendar.MONTH);
                  int dia = fecha.get(Calendar.DAY_OF_MONTH);
                  String fechahoy = "";
-                 fechahoy = ano + "-" + (mes+1) + "-" + dia;
+                 fechahoy = ano + "-" + (mes+1) + "-" + dia;    
                  
-                  
-            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Nominas_Asistencias(Usuario_Id,Fecha_Ingreso,Hora_Ingreso, "
-                    + "Hora_Salida) VALUES (?,?,?,?)");
-            pst.setString(1, valor);
-            pst.setString(2, hora);
-            pst.setString(3, fechahoy);
+                 
+                 try{
+                      ConexionDB cca = new ConexionDB();
+        Connection cna = cca.conexion();
+            PreparedStatement pst = cna.prepareStatement("INSERT INTO RRHH.nominas_asistencias(Usuario_Id,Fecha_Ingreso,Hora_ingreso) VALUES (?,?,?)");
+            pst.setString(1,valor);
+            pst.setString(2,fechahoy);
+            pst.setString(3,hora);
+       
                         
             int a= pst.executeUpdate();
             if(a>0){
                 JOptionPane.showMessageDialog(null,"Registro de asistencia exitoso");
-
+              //  mostrardatos("");
             }
             else{
                 JOptionPane.showMessageDialog(null, "Error al agregar");
             }
         }catch(Exception e){
-            
-        }
-        }
-        else{
-              sql="SELECT * FROM RRHH.Db_Usuarios WHERE (Usuario_Id'"+valor+"')";
-          JOptionPane.showMessageDialog(null, "El codigo ingresado no existe en la base de datos");
-            
-        }
         
-         String []datos = new String [7];
+    }                          
+                        
+        }
+        String []datos = new String [4];
         
         try{
             Statement st=(Statement) cn.createStatement();
             ResultSet rs=st.executeQuery(sql);
             while(rs.next()){
                 datos[0] = rs.getString(1);
-             
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+      //          modelo.addRow(datos);
             }
- 
+       //     jTable1.setModel(modelo);
         }catch(SQLException ex){
            // Logger.getLogger(datos.class.getName()).log(Level.SEVERE,null,ex);
         }
         
         
+        
+//         
+//       ConexionDB cc = new ConexionDB();
+//        Connection cn = cc.conexion();  
+//        
+//        String sql="";
+//        
+//        if(valor.equals("")){
+//               sql="SELECT * FROM RRHH.Db_Usuarios";
+//
+//              try{
+//                  //select from where agregar para buscar
+//                  
+//                  
+//                   sql="SELECT * FROM RRHH.Db_Usuarios";
+//                  JOptionPane.showMessageDialog(null, "Se ha registrado tu asistencia");
+//                  //obtener hora
+//                  DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//                  Date date = new Date();
+//                  
+//                  String hora="";
+//                 hora =  dateFormat.format(date);
+//                 
+//                 //obtener fecha
+//                 Calendar fecha = new GregorianCalendar();
+//                 
+//                 int ano = fecha.get(Calendar.YEAR);
+//                 int mes = fecha.get(Calendar.MONTH);
+//                 int dia = fecha.get(Calendar.DAY_OF_MONTH);
+//                 String fechahoy = "";
+//                 fechahoy = ano + "-" + (mes+1) + "-" + dia;
+//                 
+//                  
+//            PreparedStatement pst = cn.prepareStatement("INSERT INTO RRHH.Nominas_Asistencias(Usuario_Id,Fecha_Ingreso,Hora_Ingreso, "
+//                    + "Hora_Salida) VALUES (?,?,?)");
+//            pst.setString(1, valor);
+//            pst.setString(2, hora);
+//            pst.setString(3, fechahoy);
+//                        
+//            int a= pst.executeUpdate();
+//            if(a>0){
+//                JOptionPane.showMessageDialog(null,"Registro de asistencia exitoso");
+//
+//            }
+//            else{
+//                JOptionPane.showMessageDialog(null, "Error al agregar");
+//            }
+//        }catch(Exception e){
+//            
+//        }
+//        }
+//        else{
+//              sql="SELECT * FROM RRHH.Db_Usuarios WHERE (Usuario_Id'"+valor+"')";
+//          JOptionPane.showMessageDialog(null, "El codigo ingresado no existe en la base de datos");
+//            
+//        }
+//        
+//         String []datos = new String [7];
+//        
+//        try{
+//            Statement st=(Statement) cn.createStatement();
+//            ResultSet rs=st.executeQuery(sql);
+//            while(rs.next()){
+//                datos[0] = rs.getString(1);
+//             
+//            }
+// 
+//        }catch(SQLException ex){
+//           // Logger.getLogger(datos.class.getName()).log(Level.SEVERE,null,ex);
+//        }
+//        
+//        
     }
     
 

@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Barcenas/Desktop/ProyectoTesis/QRCodeV1/src/Package/QR/Menu.java</file>
+            <file>file:/C:/Users/Sam/OneDrive/Escritorio/Tesis/QRCodeV1/src/Package/QR/FakeDataProvider.java</file>
+            <file>file:/C:/Users/Sam/OneDrive/Escritorio/Tesis/QRCodeV1/src/Package/QR/Menu.java</file>
+            <file>file:/C:/Users/Sam/OneDrive/Escritorio/Tesis/QRCodeV1/src/Package/QR/BaseDConsultas.java</file>
+            <file>file:/C:/Users/Sam/OneDrive/Escritorio/Tesis/QRCodeV1/src/Package/QR/ExcelGenerator.java</file>
         </group>
     </open-files>
 </project-private>

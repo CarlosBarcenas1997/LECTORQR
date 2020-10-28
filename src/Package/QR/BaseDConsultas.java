@@ -41,10 +41,13 @@ public class BaseDConsultas extends javax.swing.JFrame {
     
     public BaseDConsultas() {
         initComponents();
+        
         mostrardatos("");
-       mostrarPuestos("");
+    
         mostrardatosjornadas("");
        
+        mostrarPuestos("");
+        
         mostrarAsistencia("");
     }
   
@@ -84,7 +87,7 @@ public class BaseDConsultas extends javax.swing.JFrame {
                 asistencia.addRow(datos);
                 
             }
-            jTable2.setModel(asistencia);
+            jTable4.setModel(asistencia);
         }catch(SQLException ex){
            // Logger.getLogger(datos.class.getName()).log(Level.SEVERE,null,ex);
         }
@@ -98,7 +101,7 @@ public class BaseDConsultas extends javax.swing.JFrame {
         
         puestos.addColumn("Puesto_Id");
         puestos.addColumn("Nombre_Puesto");
-        jTable3.setModel(puestos);
+        jTable2.setModel(puestos);
          String sql="";
         if(valor.equals("")){
             sql="SELECT * FROM RRHH.Db_Puestos";
